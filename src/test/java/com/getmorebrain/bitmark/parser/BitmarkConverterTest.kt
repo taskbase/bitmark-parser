@@ -1,8 +1,8 @@
 package com.getmorebrain.bitmark.parser
 
 import com.getmorebrain.bitmark.parser.model.ClozeBit
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import org.antlr.v4.runtime.CharStreams
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -18,11 +18,17 @@ class BitmarkConverterTest {
         assertTrue(clozeBit.gaps.keys.contains("{0}"))
         assertTrue(clozeBit.gaps.keys.contains("{1}"))
         assertEquals(listOf("cloze", "gap text"), clozeBit.gaps.values.first().solutions)
-        assertEquals("noun", clozeBit.gaps["{0}"]!!.instruction)
-        assertEquals("2", clozeBit.gaps["{1}"]!!.solutions.first())
-        assertEquals("1 or 2", clozeBit.gaps["{1}"]!!.hint)
-
+        assertEquals("noun", clozeBit.gaps["{0}"]?.instruction)
+        assertEquals("2", clozeBit.gaps["{1}"]?.solutions?.first())
+        assertEquals("1 or 2", clozeBit.gaps["{1}"]?.hint)
         println(GsonBuilder().setPrettyPrinting().create().toJson(clozeBit))
+    }
+
+    @Test
+    fun testParseEmoticons() {
+        val stream = this.javaClass.classLoader.getResourceAsStream("examples/cloze_emoticons.bit")
+        val bits = BitmarkConverter().parse(CharStreams.fromStream(stream, Charsets.UTF_8))
+        println(GsonBuilder().setPrettyPrinting().create().toJson(bits.first()))
     }
 
 }

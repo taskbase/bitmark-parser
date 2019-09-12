@@ -60,14 +60,6 @@ class BitmarkListenerImpl(
     override fun exitMultipleChoice(ctx: BitmarkParser.MultipleChoiceContext) {
     }
 
-    override fun enterMultipleChoiceType(ctx: BitmarkParser.MultipleChoiceTypeContext) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun exitMultipleChoiceType(ctx: BitmarkParser.MultipleChoiceTypeContext) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun visitErrorNode(node: ErrorNode) {
         log.severe(node.text)
     }
@@ -108,14 +100,8 @@ class BitmarkListenerImpl(
         bits.add(cloze)
     }
 
-    override fun enterClozeType(ctx: BitmarkParser.ClozeTypeContext) {
-    }
-
-    override fun exitClozeType(ctx: BitmarkParser.ClozeTypeContext) {
-    }
-
     override fun enterClozeInstruction(ctx: BitmarkParser.ClozeInstructionContext) {
-        cloze = cloze.copy(instruction = ctx.TEXT().symbol.text)
+        cloze = cloze.copy(instruction = ctx.STRING().symbol.text)
     }
 
     override fun exitClozeInstruction(ctx: BitmarkParser.ClozeInstructionContext) {
@@ -125,7 +111,7 @@ class BitmarkListenerImpl(
     }
 
     override fun enterGapHint(ctx: BitmarkParser.GapHintContext) {
-        clozeGap = clozeGap.copy(second = clozeGap.second.copy(hint = ctx.TEXT().symbol.text))
+        clozeGap = clozeGap.copy(second = clozeGap.second.copy(hint = ctx.STRING().symbol.text))
     }
 
     override fun exitGapHint(ctx: BitmarkParser.GapHintContext) {
@@ -140,14 +126,14 @@ class BitmarkListenerImpl(
     }
 
     override fun enterGap(ctx: BitmarkParser.GapContext) {
-        clozeGap = clozeGap.copy(second = clozeGap.second.copy(solutions = clozeGap.second.solutions + ctx.TEXT().symbol.text))
+        clozeGap = clozeGap.copy(second = clozeGap.second.copy(solutions = clozeGap.second.solutions + ctx.STRING().symbol.text))
     }
 
     override fun exitGap(ctx: BitmarkParser.GapContext) {
     }
 
     override fun enterGapInstruction(ctx: BitmarkParser.GapInstructionContext) {
-        clozeGap = clozeGap.copy(second = clozeGap.second.copy(instruction = ctx.TEXT().symbol.text))
+        clozeGap = clozeGap.copy(second = clozeGap.second.copy(instruction = ctx.STRING().symbol.text))
     }
 
     override fun exitGapInstruction(ctx: BitmarkParser.GapInstructionContext) {
