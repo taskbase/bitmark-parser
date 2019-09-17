@@ -1,4 +1,4 @@
-package com.getmorebrain.bitmark.parser.model
+package com.getmorebrain.bitmark.model
 
 open class Bit(
         val type: String
@@ -6,6 +6,9 @@ open class Bit(
 
 data class ClozeBit(
         val format: String = "text",
+        val image: String? = null,
+        val audio: String? = null,
+        val article: String? = null,
         val item: String? = null,
         val instruction: String? = null,
         val hint: String? = null,
