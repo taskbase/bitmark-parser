@@ -1,6 +1,6 @@
 package com.getmorebrain.bitmark.parser
 
-import com.getmorebrain.bitmark.parser.model.ClozeBit
+import com.getmorebrain.bitmark.model.ClozeBit
 import com.google.gson.GsonBuilder
 import org.antlr.v4.runtime.CharStreams
 import org.junit.jupiter.api.Assertions.*
@@ -28,6 +28,26 @@ class BitmarkConverterTest {
     fun testParseEmoticons() {
         val stream = this.javaClass.classLoader.getResourceAsStream("examples/cloze_emoticons.bit")
         val bits = BitmarkConverter().parse(CharStreams.fromStream(stream, Charsets.UTF_8))
+        assertNotNull(bits.firstOrNull())
+        println(GsonBuilder().setPrettyPrinting().create().toJson(bits.first()))
+    }
+
+    @Test
+    fun testParseAttachment() {
+        val stream = this.javaClass.classLoader.getResourceAsStream("examples/cloze_attachment.bit")
+        val bits = BitmarkConverter().parse(CharStreams.fromStream(stream, Charsets.UTF_8))
+        val clozeBit = bits.first() as ClozeBit
+        assertNotNull(clozeBit.image)
+        assertNull(clozeBit.audio)
+        println(GsonBuilder().setPrettyPrinting().create().toJson(bits.first()))
+    }
+
+    @Test
+    fun testParseBitmarkFormat() {
+        val stream = this.javaClass.classLoader.getResourceAsStream("examples/cloze_bitmark--.bit")
+        val bits = BitmarkConverter().parse(CharStreams.fromStream(stream, Charsets.UTF_8))
+        val clozeBit = bits.first() as ClozeBit
+        assertEquals("bitmark--", clozeBit.format)
         println(GsonBuilder().setPrettyPrinting().create().toJson(bits.first()))
     }
 
