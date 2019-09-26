@@ -6,11 +6,12 @@ import com.getmorebrain.bitmark.model.Bit
 import com.getmorebrain.bitmark.model.ClozeBit
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.ErrorNode
+import org.antlr.v4.runtime.tree.ParseTree
 import org.antlr.v4.runtime.tree.TerminalNode
 import java.util.logging.Logger
 
 class BitmarkListenerImpl(
-        private val log: Logger = Logger.getLogger(BitmarkListenerImpl::class.java.name)
+    private val log: Logger = Logger.getLogger(BitmarkListenerImpl::class.java.name)
 ) : BitmarkListener {
 
     private val bits: MutableList<Bit> = ArrayList()
@@ -38,34 +39,49 @@ class BitmarkListenerImpl(
             null
         }
 
+        val body = StringBuilder()
+
         val article = ClozeBit().article // TODO extend parser and test cases
         val instruction = ctx.instruction()?.string()?.let { treeToString(it) } ?: defaultValues.instruction
-        val gaps: Map<String, ClozeBit.ClozeGap> = ctx.clozeText().flatMap { clozeText: BitmarkParser.ClozeTextContext ->
-            clozeText.gapChain().mapIndexed { i: Int, gapChain: BitmarkParser.GapChainContext ->
-                Pair("{$i}",
+        val gaps: Map<String, ClozeBit.ClozeGap> =
+            ctx.clozeText().flatMap { clozeText: BitmarkParser.ClozeTextContext ->
+                body.append(treeToString(clozeText.string()))
+                clozeText.gapContext().mapIndexed { i: Int, gapContext: BitmarkParser.GapContextContext ->
+                    val gapPlaceHolder = "{$i}"
+                    body.append(gapPlaceHolder)
+                    val gapChain = gapContext.gapChain()
+                    body.append(treeToString(gapContext.string()))
+                    Pair(gapPlaceHolder,
                         ClozeBit.ClozeGap(
-                                solutions = gapChain.gap().map { gap: BitmarkParser.GapContext ->
-                                    treeToString(gap.string())
-                                },
-                                hint = gapChain.gapHint().firstOrNull()?.string()?.let { treeToString(it) },
-                                instruction = gapChain.gapInstruction().firstOrNull()?.string()?.let { treeToString(it) }
-                        ))
-            }
-        }.toMap()
+                            solutions = gapChain.gap().map { gap: BitmarkParser.GapContext ->
+                                treeToString(gap.string())
+                            },
+                            hint = gapChain.gapHint().firstOrNull()?.string()?.let { treeToString(it) },
+                            instruction = gapChain.gapInstruction().firstOrNull()?.string()?.let { treeToString(it) }
+                        )
+                    )
+                }
+            }.toMap()
 
         val cloze = ClozeBit(
-                format = format,
-                image = image,
-                audio = audio,
-                article = article,
-                item = "",
-                instruction = instruction,
-                hint = "",
-                body = "",
-                gaps = gaps
+            format = format,
+            image = image,
+            audio = audio,
+            article = article,
+            item = "",
+            instruction = instruction,
+            hint = "",
+            body = body.toString().trim(),
+            gaps = gaps
         )
 
         bits.add(cloze)
+    }
+
+    override fun enterGapContext(ctx: BitmarkParser.GapContextContext?) {
+    }
+
+    override fun exitGapContext(ctx: BitmarkParser.GapContextContext?) {
     }
 
     override fun exitCloze(ctx: BitmarkParser.ClozeContext?) {

@@ -10,7 +10,8 @@ class BitmarkConverterTest {
 
     @Test
     fun testParse() {
-        val bits = BitmarkConverter().parse("[.cloze] This sentence is a [_cloze][_gap text][!noun] with [_2][?1 or 2] gaps including an instruction for the first and a hint for the second gap.")
+        val bits =
+            BitmarkConverter().parse("[.cloze] This sentence is a [_cloze][_gap text][!noun] with [_2][?1 or 2] gaps including an instruction for the first and a hint for the second gap.")
         val clozeBit = bits.first() as ClozeBit
         assertNotNull(clozeBit)
         assertEquals("cloze", clozeBit.type)
@@ -21,6 +22,10 @@ class BitmarkConverterTest {
         assertEquals("noun", clozeBit.gaps["{0}"]?.instruction)
         assertEquals("2", clozeBit.gaps["{1}"]?.solutions?.first())
         assertEquals("1 or 2", clozeBit.gaps["{1}"]?.hint)
+        assertEquals(
+            "This sentence is a {0} with {1} gaps including an instruction for the first and a hint for the second gap.",
+            clozeBit.body
+        )
         println(GsonBuilder().setPrettyPrinting().create().toJson(clozeBit))
     }
 
