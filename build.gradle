@@ -12,7 +12,7 @@ plugins {
 
 group 'com.taskbase.bitmark'
 archivesBaseName = 'bitmark-parser'
-version '1.0'
+version '0.2'
 
 apply plugin: 'maven'
 apply plugin: 'signing'
