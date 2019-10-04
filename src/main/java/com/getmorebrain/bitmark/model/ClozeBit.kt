@@ -1,26 +1,31 @@
 package com.getmorebrain.bitmark.model
 
+enum class BitType(val typeId: String, val className: String) {
+    CLOZE("cloze", ClozeBit::class.java.name)
+}
+
 open class Bit(
-        val type: String
+    val type: String
 )
 
 data class ClozeBit(
-        val format: String = "text",
-        val image: String? = null,
-        val audio: String? = null,
-        val article: String? = null,
-        val item: String? = null,
-        val instruction: String? = null,
-        val hint: String? = null,
-        val body: String? = null,
-        val gaps: Map<String, ClozeGap> = emptyMap()) : Bit(type = "cloze") {
+    val format: String = "text",
+    val image: String? = null,
+    val audio: String? = null,
+    val article: String? = null,
+    val item: String? = null,
+    val instruction: String? = null,
+    val hint: String? = null,
+    val body: String? = null,
+    val gaps: Map<String, ClozeGap> = emptyMap()
+) : Bit(type = BitType.CLOZE.typeId) {
 
     data class ClozeGap(
-            val solutions: List<String> = emptyList(),
-            val instruction: String? = null,
-            val hint: String? = null,
-            val isExample: Boolean = false,
-            val example: String? = null
+        val solutions: List<String> = emptyList(),
+        val instruction: String? = null,
+        val hint: String? = null,
+        val isExample: Boolean = false,
+        val example: String? = null
     )
 }
 
