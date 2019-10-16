@@ -1,0 +1,18 @@
+[# About Bitmark ]
+Bitmark\++, called Bitmark Plus Plus is a ==simple== markup language for educational content.
+[## About Bitmark + ]
+Bitmark +, called Bitmark Plus is a ==subset== of bitmark\+\+.
+[### About Bitmark- ]
+Bitmark- is a very ==basic== version. >>Basic is a relative term<<.
+You can for example ++insert++ something, or even --delete-- something, if you really ==want==.
+1. This
+1. Is
+1. A
+1. List
+You can make annotations: ['some text to be annotated][!some remark]
+And of course quotations as well: ['some text to be quoted][*some quote].
+['This is a glossary entry][?Explained in the **glossary**]
+* This
+* Is
+* A
+* bulleted List with bitmark __minimal__
