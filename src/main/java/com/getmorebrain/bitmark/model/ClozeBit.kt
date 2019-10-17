@@ -1,24 +1,25 @@
 package com.getmorebrain.bitmark.model
 
-enum class BitType(val typeId: String, val className: String) {
-    CLOZE("cloze", ClozeBit::class.java.name)
-}
-
-open class Bit(
-    val type: String
-)
-
 data class ClozeBit(
-    val format: String = "text",
-    val image: String? = null,
-    val audio: String? = null,
-    val article: String? = null,
+    override val format: String = "text",
+    override val instruction: String? = null,
+    override val hint: String? = null,
+    override val image: String? = null,
+    override val audio: String? = null,
+    override val article: String? = null,
+    override val body: String? = null,
     val item: String? = null,
-    val instruction: String? = null,
-    val hint: String? = null,
-    val body: String? = null,
     val gaps: Map<String, ClozeGap> = emptyMap()
-) : Bit(type = BitType.CLOZE.typeId) {
+) : Bit(
+    type = BitType.CLOZE.typeId,
+    format = format,
+    instruction = instruction,
+    hint = hint,
+    body = body,
+    image = image,
+    audio = audio,
+    article = article
+) {
 
     data class ClozeGap(
         val solutions: List<String> = emptyList(),
@@ -28,32 +29,3 @@ data class ClozeBit(
         val example: String? = null
     )
 }
-
-/*
-{
-    "bitmark": "This sentence is a [_cloze][_gap text][!noun] with [_2][?1 or 2] gaps including an instruction for the first and a hint for the second gap.",
-    "bit": {
-        "type": "cloze",
-        "format": "text",
-        "item": "",
-        "instruction": "",
-        "hint": "",
-        "body": "This sentence is a {0} with {1} gaps including an instruction for the first and a hint for the second gap.",
-        "gaps": {
-            "{0}": {
-                "solutions":["cloze", "gap text"],
-                "instruction": "noun",
-                "isExample": false,
-                "example": ""
-            },
-            "{1}": {
-                "solutions":["2"],
-                "hint":"1 or 2",
-                "isExample": false,
-                "example": ""
-            }
-        }
-    },
-    ...
-}
- */
