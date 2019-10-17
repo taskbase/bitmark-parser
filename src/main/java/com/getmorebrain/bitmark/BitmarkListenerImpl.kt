@@ -1,22 +1,19 @@
-package com.getmorebrain.bitmark.parser
+package com.getmorebrain.bitmark
 
-import com.getmorebrain.bitmark.BitmarkListener
-import com.getmorebrain.bitmark.BitmarkParser
 import com.getmorebrain.bitmark.model.Bit
 import com.getmorebrain.bitmark.model.ClozeBit
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.ErrorNode
-import org.antlr.v4.runtime.tree.ParseTree
 import org.antlr.v4.runtime.tree.TerminalNode
 import java.util.logging.Logger
 
 class BitmarkListenerImpl(
     private val log: Logger = Logger.getLogger(BitmarkListenerImpl::class.java.name)
-) : BitmarkListener {
+) : BitExtractor {
 
     private val bits: MutableList<Bit> = ArrayList()
 
-    fun bits(): List<Bit> = bits
+    override fun bits(): List<Bit> = bits
 
     override fun enterCloze(ctx: BitmarkParser.ClozeContext) {
 

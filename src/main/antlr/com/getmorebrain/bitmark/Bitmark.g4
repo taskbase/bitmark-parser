@@ -9,10 +9,11 @@ package com.getmorebrain.bitmark;
  */
 
 COMMENT              : ('||' .*? '||' | '[.' | '[=') -> skip;
+NEW_LINE             : '\n';
 OPEN_TYPE            : '[.';
 CORRECT_OPTION_OPEN  : '[+';
 WRONG_OPTION_OPEN    : '[-';
-OPEN_INSTRUCTION     : '[!';
+OPEN_INSTRUCTION     : NEW_LINE* '[!';
 OPEN_HINT            : '[?';
 OPEN_GAP             : '[_';
 CLOSE                : ']';
@@ -28,7 +29,7 @@ STRING_CHAR          : .+?; // Matches every character separately into a single 
  */
 
 // Strings are everything that is not otherwise matched
-string  : STRING_CHAR+ ']'? STRING_CHAR* ;
+string  : (NEW_LINE | STRING_CHAR)+;
 
 // Constructs
 instruction : OPEN_INSTRUCTION string CLOSE;

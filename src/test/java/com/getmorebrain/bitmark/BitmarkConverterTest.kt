@@ -1,10 +1,10 @@
-package com.getmorebrain.bitmark.parser
+package com.getmorebrain.bitmark
 
 import com.getmorebrain.bitmark.model.ClozeBit
 import com.google.gson.GsonBuilder
 import org.antlr.v4.runtime.CharStreams
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
+import org.junit.Assert.*
+import org.junit.Test
 
 class BitmarkConverterTest {
 
@@ -54,6 +54,14 @@ class BitmarkConverterTest {
         val clozeBit = bits.first() as ClozeBit
         assertEquals("bitmark--", clozeBit.format)
         println(GsonBuilder().setPrettyPrinting().create().toJson(bits.first()))
+    }
+
+    @Test
+    fun testBitmark() {
+        val bitmark = "[.cloze]\n[!some instruction] hello bitmark [_gap 1][_gap 2] with two gaps."
+        val bits = BitmarkConverter().parse(bitmark)
+        val bit = bits.first() as ClozeBit
+        assertEquals("some instruction", bit.instruction)
     }
 
 }

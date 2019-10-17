@@ -3,7 +3,7 @@
 grammar Bitmarktext;
 
 @header {
-package com.getmorebrain.bitmark;
+package com.getmorebrain.bitmark.text;
 }
 
 /*

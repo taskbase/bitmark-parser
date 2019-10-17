@@ -1,7 +1,5 @@
-package com.getmorebrain.bitmark.parser
+package com.getmorebrain.bitmark
 
-import com.getmorebrain.bitmark.BitmarkLexer
-import com.getmorebrain.bitmark.BitmarkParser
 import com.getmorebrain.bitmark.model.Bit
 import org.antlr.v4.runtime.CharStream
 import org.antlr.v4.runtime.CharStreams
@@ -12,19 +10,20 @@ import java.io.FileInputStream
 import java.nio.charset.StandardCharsets
 
 
-class BitmarkConverter {
+class BitmarkConverter(
+    private val bitmarkListener: BitExtractor = BitmarkListenerImpl()
+) {
 
-    fun parse(bitmarkString: String) = parse(CharStreams.fromString(bitmarkString))
+    fun parse(bitmarkString: String): List<Bit> = parse(CharStreams.fromString(bitmarkString))
 
-    fun parse(file: File) = parse(CharStreams.fromStream(FileInputStream(file), StandardCharsets.UTF_8))
+    fun parse(file: File): List<Bit> = parse(CharStreams.fromStream(FileInputStream(file), StandardCharsets.UTF_8))
 
     fun parse(charStream: CharStream): List<Bit> {
         val lexer = BitmarkLexer(charStream)
         val tokens = CommonTokenStream(lexer)
         val parser = BitmarkParser(tokens)
         val walker = ParseTreeWalker()
-        val listener = BitmarkListenerImpl()
-        walker.walk(listener, parser.bitBook())
-        return listener.bits()
+        walker.walk(bitmarkListener, parser.bitBook())
+        return bitmarkListener.bits()
     }
 }
