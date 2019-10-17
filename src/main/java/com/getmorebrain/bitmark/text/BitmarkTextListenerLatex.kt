@@ -5,7 +5,7 @@ import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
 
 class BitmarkTextListenerLatex(
-    val builder: StringBuilder = StringBuilder()
+    private val builder: StringBuilder = StringBuilder()
 ) : MarkupExtractor {
 
     override fun markup(): String = builder.toString()

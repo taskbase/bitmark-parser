@@ -1,6 +1,5 @@
 package com.getmorebrain.bitmark.text
 
-import org.antlr.v4.runtime.CharStreams
 import org.junit.Test
 import java.io.BufferedReader
 import java.io.InputStreamReader

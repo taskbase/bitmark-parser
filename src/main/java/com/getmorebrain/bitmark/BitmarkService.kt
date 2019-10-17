@@ -9,9 +9,9 @@ import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
 import java.util.logging.Logger
 
-class BitmarkListenerImpl(
+class BitmarkService(
     private val textConverter: BitmarkTextConverter = DefaultBitmarkTextConverter(),
-    private val log: Logger = Logger.getLogger(BitmarkListenerImpl::class.java.name)
+    private val log: Logger = Logger.getLogger(BitmarkService::class.java.name)
 ) : BitExtractor {
 
     private val bits: MutableList<Bit> = ArrayList()

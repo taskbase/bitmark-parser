@@ -5,7 +5,9 @@ import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
 
-open class AntlrBitmarkTextConverter(private val bitmarkTextListener: MarkupExtractor) : BitmarkTextConverter {
+open class AntlrBitmarkTextConverter(
+    private val bitmarkTextListener: MarkupExtractor
+) : BitmarkTextConverter {
     override fun convert(bitmarkText: String): String {
         return convert(bitmarkTextListener, CharStreams.fromString(bitmarkText))
     }
