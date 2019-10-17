@@ -1,6 +1,6 @@
 package com.getmorebrain.bitmark.model
 
-open class Bit(
+abstract class Bit(
     val type: String,
     @Transient open val format: String = "text",
     @Transient open val instruction: String?,
