@@ -4,11 +4,15 @@ import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
 
-class BitmarkTextListenerHtml(
-    private val builder: StringBuilder = StringBuilder()
-) : MarkupExtractor {
+class BitmarkTextListenerHtml : MarkupExtractor {
 
-    override fun markup(): String = builder.toString()
+    private var builder: StringBuilder = StringBuilder()
+
+    override fun markup(): String {
+        val markup = builder.toString()
+        builder = StringBuilder()
+        return markup
+    }
 
     override fun enterBitmarkPlusPlus(ctx: BitmarktextParser.BitmarkPlusPlusContext) {
     }
