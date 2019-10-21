@@ -2,15 +2,12 @@ package com.getmorebrain.bitmark
 
 import com.getmorebrain.bitmark.model.Bit
 import com.getmorebrain.bitmark.model.ClozeBit
-import com.getmorebrain.bitmark.text.BitmarkTextConverter
-import com.getmorebrain.bitmark.text.DefaultBitmarkTextConverter
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
 import java.util.logging.Logger
 
 class BitmarkService(
-    private val textConverter: BitmarkTextConverter = DefaultBitmarkTextConverter(),
     private val log: Logger = Logger.getLogger(BitmarkService::class.java.name)
 ) : BitExtractor {
 
@@ -187,9 +184,9 @@ class BitmarkService(
     /*
      * Helper functions
      */
-    fun treeToString(ctx: BitmarkParser.StringContext): String {
+    private fun treeToString(ctx: BitmarkParser.StringContext): String {
         val sb = StringBuilder()
         ctx.STRING_CHAR().forEach { char -> sb.append(char.text) }
-        return textConverter.convert(sb.toString())
+        return sb.toString()
     }
 }
