@@ -57,11 +57,18 @@ class BitmarkServiceTest {
     }
 
     @Test
-    fun testBitmark() {
+    fun testParseInstruction() {
         val bitmark = "[.cloze]\n[!some instruction] hello bitmark [_gap 1][_gap 2] with two gaps."
         val bits = BitmarkService().parse(bitmark)
         val bit = bits.first() as ClozeBit
         assertEquals("some instruction", bit.instruction)
     }
 
+    @Test
+    fun testParseClozeWithoutCloze() {
+        val bitmark = "[.cloze]\nhello bitmark."
+        val bits = BitmarkService().parse(bitmark)
+        val bit = bits.first() as ClozeBit
+        assertEquals("hello bitmark.", bit.body)
+    }
 }
