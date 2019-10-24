@@ -26,7 +26,7 @@ DELETE                  : '--';
 INSERT                  : '++';
 REMARK_START            : '>>';
 REMARK_END              : '<<';
-NEW_LINE                : '\n';
+NEW_LINE                : '\\n';
 STRING_CHAR             : .+?; // Matches every character separately into a single token!
 
 /*

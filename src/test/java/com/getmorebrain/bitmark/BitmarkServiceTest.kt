@@ -71,4 +71,26 @@ class BitmarkServiceTest {
         val bit = bits.first() as ClozeBit
         assertEquals("hello bitmark.", bit.body)
     }
+
+    @Test
+    fun testClozeWithList() {
+        val body = "one\n" +
+                "1. test\n" +
+                "1. two"
+        val bitmark = "[.cloze][!hello]$body"
+        val bits = BitmarkService().parse(bitmark)
+        val bit = bits.first() as ClozeBit
+        assertEquals(body, bit.body)
+    }
+
+    @Test
+    fun testClozeWithNewlines() {
+        val body = "a\n" +
+                "b\n" +
+                "c"
+        val bitmark = "[.cloze][!hello]$body"
+        val bits = BitmarkService().parse(bitmark)
+        val bit = bits.first() as ClozeBit
+        assertEquals(body, bit.body)
+    }
 }

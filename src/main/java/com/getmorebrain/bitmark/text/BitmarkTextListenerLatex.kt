@@ -1,6 +1,7 @@
 package com.getmorebrain.bitmark.text
 
 import org.antlr.v4.runtime.ParserRuleContext
+import org.antlr.v4.runtime.Token
 import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
 
@@ -29,7 +30,14 @@ class BitmarkTextListenerLatex(
 
     private fun treeToString(ctx: BitmarktextParser.PlainTextContext): String {
         val sb = StringBuilder()
-        ctx.STRING_CHAR().forEach { char -> sb.append(char.text) }
+        ctx.children.forEach {
+            val text = it.text
+            if (text == "\n") {
+                sb.append("\n\n")
+            } else {
+                sb.append(text)
+            }
+        }
         return sb.toString()
     }
 
@@ -77,11 +85,9 @@ class BitmarkTextListenerLatex(
     }
 
     override fun enterRemarked(ctx: BitmarktextParser.RemarkedContext) {
-        builder.append("\\begin{remark}")
     }
 
     override fun exitRemarked(ctx: BitmarktextParser.RemarkedContext) {
-        builder.append("\\end{remark}")
     }
 
     override fun enterTitle(ctx: BitmarktextParser.TitleContext) {
@@ -109,11 +115,11 @@ class BitmarkTextListenerLatex(
     }
 
     override fun enterBulletedList(ctx: BitmarktextParser.BulletedListContext) {
-        builder.append("\\begin itemize{itemize>")
+        builder.append("\\begin{itemize}")
     }
 
     override fun exitBulletedList(ctx: BitmarktextParser.BulletedListContext) {
-        builder.append("\\end itemize{itemize>")
+        builder.append("\\end{itemize}")
     }
 
     override fun enterBulletedListEntry(ctx: BitmarktextParser.BulletedListEntryContext) {
@@ -133,7 +139,7 @@ class BitmarkTextListenerLatex(
     }
 
     override fun enterNumberedListEntry(ctx: BitmarktextParser.NumberedListEntryContext) {
-        builder.append("\\item")
+        builder.append("\\item ")
     }
 
     override fun exitNumberedListEntry(ctx: BitmarktextParser.NumberedListEntryContext) {
@@ -153,19 +159,15 @@ class BitmarkTextListenerLatex(
     }
 
     override fun enterAnnotation(ctx: BitmarktextParser.AnnotationContext) {
-        builder.append("\\footnote{")
     }
 
     override fun exitAnnotation(ctx: BitmarktextParser.AnnotationContext) {
-        builder.append("}")
     }
 
     override fun enterFootnote(ctx: BitmarktextParser.FootnoteContext) {
-        builder.append("\\footnote{")
     }
 
     override fun exitFootnote(ctx: BitmarktextParser.FootnoteContext) {
-        builder.append("}")
     }
 
     override fun enterGlossary(ctx: BitmarktextParser.GlossaryContext) {
@@ -175,11 +177,9 @@ class BitmarkTextListenerLatex(
     }
 
     override fun enterComment(ctx: BitmarktextParser.CommentContext) {
-        builder.append("\\begin{comment}")
     }
 
     override fun exitComment(ctx: BitmarktextParser.CommentContext) {
-        builder.append("\\end{comment}")
     }
 
     override fun enterEveryRule(ctx: ParserRuleContext) {

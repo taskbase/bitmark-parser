@@ -186,7 +186,7 @@ class BitmarkService(
      */
     private fun treeToString(ctx: BitmarkParser.StringContext): String {
         val sb = StringBuilder()
-        ctx.STRING_CHAR().forEach { char -> sb.append(char.text) }
+        ctx.children.forEach{ sb.append(it.text) }
         return sb.toString()
     }
 }
