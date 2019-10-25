@@ -9,7 +9,7 @@ package com.getmorebrain.bitmark;
  */
 
 COMMENT              : ('||' .*? '||' | '[.' | '[=') -> skip;
-NEW_LINE             : '\\n';
+NEW_LINE             : '\n';
 OPEN_TYPE            : '[.';
 CORRECT_OPTION_OPEN  : '[+';
 WRONG_OPTION_OPEN    : '[-';

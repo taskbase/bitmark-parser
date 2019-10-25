@@ -13,7 +13,7 @@ class BitmarkTextListenerHtmlTest {
     fun testHtmlConversion() {
         val stream = this.javaClass.classLoader.getResourceAsStream("examples/bitmarktext/bitmarkpp.txt")
         val html = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerHtml()).convert(
-                BufferedReader(InputStreamReader(stream)).lines().asSequence().fold("") { l, r -> "$l\n$r" }
+            BufferedReader(InputStreamReader(stream)).lines().asSequence().fold("") { l, r -> "$l\n$r" }
         )
         assertNotNull(html)
         println(html)
@@ -25,12 +25,7 @@ class BitmarkTextListenerHtmlTest {
 1. This
 """
         val html = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerHtml()).convert(input)
-
-        Assert.assertEquals(html, """This is a list with a single item
-<ol>
-<li>This</li>
-</ol>
-""")
+        Assert.assertEquals(html, "This is a list with a single item<ol><li>This</li></ol>")
     }
 
     @Test
@@ -42,30 +37,8 @@ class BitmarkTextListenerHtmlTest {
 1. List
 """
         val html = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerHtml()).convert(input)
-
-        Assert.assertEquals(html, """This is a list
-<ol>
-<li>This</li>
-<li>Is</li>
-<li>A</li>
-<li>List</li>
-</ol>
-""")
+        Assert.assertEquals(
+            "This is a list<ol><li>This</li><li>Is</li><li>A</li><li>List</li></ol>", html
+        )
     }
-
-    @Test
-    fun testHtmlMixedConversion() {
-        val input = """[!Hello]
-1. W[_o]rld.
-"""
-        val html = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerHtml()).convert(input)
-
-        Assert.assertEquals(html, """Hello
-<ol>
-<li>W<input there should be some stuff here>rld</li>
-</ol>
-""")
-    }
-
-
 }

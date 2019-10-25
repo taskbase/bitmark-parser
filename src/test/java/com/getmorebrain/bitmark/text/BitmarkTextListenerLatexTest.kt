@@ -29,14 +29,16 @@ class BitmarkTextListenerLatexTest {
 """
         val laTeX = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerLatex()).convert(input)
 
-        assertEquals(laTeX, """This is a list
+        assertEquals(
+            """This is a list
 \begin{enumerate}
 \item This
 \item Is
 \item A
 \item List
 \end{enumerate}
-""")
+""", laTeX
+        )
 
     }
 }

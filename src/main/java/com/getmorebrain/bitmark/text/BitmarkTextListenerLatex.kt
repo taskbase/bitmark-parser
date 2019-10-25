@@ -1,7 +1,6 @@
 package com.getmorebrain.bitmark.text
 
 import org.antlr.v4.runtime.ParserRuleContext
-import org.antlr.v4.runtime.Token
 import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
 
@@ -115,7 +114,7 @@ class BitmarkTextListenerLatex(
     }
 
     override fun enterBulletedList(ctx: BitmarktextParser.BulletedListContext) {
-        builder.append("\\begin{itemize}")
+        builder.append("\n\\begin{itemize}")
     }
 
     override fun exitBulletedList(ctx: BitmarktextParser.BulletedListContext) {
@@ -131,7 +130,7 @@ class BitmarkTextListenerLatex(
     }
 
     override fun enterNumberedList(ctx: BitmarktextParser.NumberedListContext) {
-        builder.append("\\begin{enumerate}\n")
+        builder.append("\n\\begin{enumerate}\n")
     }
 
     override fun exitNumberedList(ctx: BitmarktextParser.NumberedListContext) {
