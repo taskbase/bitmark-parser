@@ -68,7 +68,7 @@ class BitmarkService(
             item = "",
             instruction = instruction,
             hint = "",
-            body = body.toString().trim(),
+            body = body.toString(),
             gaps = gaps
         )
 
@@ -186,7 +186,9 @@ class BitmarkService(
      */
     private fun treeToString(ctx: BitmarkParser.StringContext): String {
         val sb = StringBuilder()
-        ctx.children.forEach{ sb.append(it.text) }
+        ctx.children.forEach {
+            sb.append(it.text)
+        }
         return sb.toString()
     }
 }

@@ -22,8 +22,7 @@ class BitmarkTextListenerHtmlTest {
     @Test
     fun testHtmlListConversion_SingleItems() {
         val input = """This is a list with a single item
-1. This
-"""
+1. This"""
         val html = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerHtml()).convert(input)
         Assert.assertEquals(html, "This is a list with a single item<ol><li>This</li></ol>")
     }
@@ -34,8 +33,7 @@ class BitmarkTextListenerHtmlTest {
 1. This
 1. Is
 1. A
-1. List
-"""
+1. List"""
         val html = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerHtml()).convert(input)
         Assert.assertEquals(
             "This is a list<ol><li>This</li><li>Is</li><li>A</li><li>List</li></ol>", html

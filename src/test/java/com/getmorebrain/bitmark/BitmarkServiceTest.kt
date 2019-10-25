@@ -11,7 +11,7 @@ class BitmarkServiceTest {
     @Test
     fun testParse() {
         val bits = BitmarkService()
-            .parse("[.cloze] This sentence is a [_cloze][_gap text][!noun] with [_2][?1 or 2] gaps including an instruction for the first and a hint for the second gap.")
+            .parse("[.cloze]This sentence is a [_cloze][_gap text][!noun] with [_2][?1 or 2] gaps including an instruction for the first and a hint for the second gap.")
         val clozeBit = bits.first() as ClozeBit
         assertNotNull(clozeBit)
         assertEquals("cloze", clozeBit.type)
@@ -69,7 +69,7 @@ class BitmarkServiceTest {
         val bitmark = "[.cloze]\nhello bitmark."
         val bits = BitmarkService().parse(bitmark)
         val bit = bits.first() as ClozeBit
-        assertEquals("hello bitmark.", bit.body)
+        assertEquals("\nhello bitmark.", bit.body)
     }
 
     @Test
@@ -92,5 +92,18 @@ class BitmarkServiceTest {
         val bits = BitmarkService().parse(bitmark)
         val bit = bits.first() as ClozeBit
         assertEquals(body, bit.body)
+    }
+
+    @Test
+    fun testPreserveNewlines() {
+        val bitmark = """[.cloze][!Hello]
+Line 1
+Line 2"""
+        val bit = BitmarkService().parse(bitmark).first()
+        assertEquals(
+            """
+Line 1
+Line 2""", bit.body
+        )
     }
 }
