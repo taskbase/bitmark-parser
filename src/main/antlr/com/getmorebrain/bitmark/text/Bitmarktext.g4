@@ -27,6 +27,8 @@ INSERT                  : '++';
 REMARK_START            : '>>';
 REMARK_END              : '<<';
 NEW_LINE                : '\n';
+BULLETED_LIST_START     : ({getCharPositionInLine() == 0}? | NEW_LINE) '* ';
+NUMBERED_LIST_START     : ({getCharPositionInLine() == 0}? | NEW_LINE) '1. ';
 STRING_CHAR             : .+?; // Matches every character separately into a single token!
 
 /*
@@ -62,7 +64,7 @@ inserted : INSERT plainText INSERT;
 remarked : REMARK_START plainText REMARK_END;
 
 // Lists
-bulletedList : NEW_LINE bulletedListEntry+;
-bulletedListEntry : '* ' bitmarkMinimalElement+ NEW_LINE;
-numberedList : NEW_LINE numberedListEntry+;
-numberedListEntry : '1. ' bitmarkMinimalElement+ NEW_LINE;
+bulletedList : bulletedListEntry+;
+bulletedListEntry : BULLETED_LIST_START bitmarkMinimalElement+;
+numberedList : numberedListEntry+;
+numberedListEntry : NUMBERED_LIST_START bitmarkMinimalElement+;

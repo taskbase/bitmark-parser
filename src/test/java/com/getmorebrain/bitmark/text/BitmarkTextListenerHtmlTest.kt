@@ -41,4 +41,11 @@ class BitmarkTextListenerHtmlTest {
             "This is a list<ol><li>This</li><li>Is</li><li>A</li><li>List</li></ol>", html
         )
     }
+
+    @Test
+    fun testHtmlListConversionWithListOnly_MultipleItems() {
+        val input = """1. This is a list with only a single element"""
+        val html = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerHtml()).convert(input)
+        Assert.assertEquals("<ol><li>This is a list with only a single element</li></ol>", html)
+    }
 }

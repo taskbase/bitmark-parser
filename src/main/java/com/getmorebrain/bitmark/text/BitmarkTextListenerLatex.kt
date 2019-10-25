@@ -30,12 +30,8 @@ class BitmarkTextListenerLatex(
     private fun treeToString(ctx: BitmarktextParser.PlainTextContext): String {
         val sb = StringBuilder()
         ctx.children.forEach {
-            val text = it.text
-            if (text == "\n") {
-                sb.append("\n\n")
-            } else {
-                sb.append(text)
-            }
+            val text: String = it.text
+            sb.append(text)
         }
         return sb.toString()
     }

@@ -25,10 +25,8 @@ class BitmarkTextListenerLatexTest {
 1. This
 1. Is
 1. A
-1. List
-"""
+1. List"""
         val laTeX = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerLatex()).convert(input)
-
         assertEquals(
             """This is a list
 \begin{enumerate}
