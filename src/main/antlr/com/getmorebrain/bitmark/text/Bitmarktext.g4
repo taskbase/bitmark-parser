@@ -17,7 +17,6 @@ TEXT_RANGE_START        : '[\'';
 ANNOTATION_START        : '[!';
 FOOTNOTE_START          : '[*';
 GLOSSARY_START          : '[?';
-END_TAG                 : ']';
 EMPHASIZE               : '__';
 IMPORTANT               : '**';
 COMMENT                 : '||';
@@ -30,6 +29,7 @@ NEW_LINE                : '\n';
 BULLETED_LIST_START     : ({getCharPositionInLine() == 0}? | NEW_LINE) '* ';
 NUMBERED_LIST_START     : ({getCharPositionInLine() == 0}? | NEW_LINE) '1. ';
 STRING_CHAR             : .+?; // Matches every character separately into a single token!
+END_TAG                 : ']';
 
 /*
  * Parser Rules
@@ -37,14 +37,15 @@ STRING_CHAR             : .+?; // Matches every character separately into a sing
 
 // Structures
 bitmarkPlusPlus : bitmarkPlusPlusElement+;
-bitmarkMinimalElement : emphasized | important | plainText;
+bitmarkMinimalElement : emphasized | important | multiLinePlainText;
 bitmarkPlusPlusElement : bitmarkMinimalElement | title | subtitle | secondLevelSubtitle | deleted | inserted | remarked | highlighted | textRange | annotation | footnote | glossary| bulletedList | numberedList;
-plainText : (NEW_LINE | STRING_CHAR | ESCAPED)+;
+multiLinePlainText : (NEW_LINE | STRING_CHAR | ESCAPED)+;
+plainText : ( STRING_CHAR | ESCAPED)+;
 
 // Titles
 title : TITLE_START bitmarkMinimalElement+ END_TAG;
-subtitle : SUBTITLE_START plainText END_TAG;
-secondLevelSubtitle : SECOND_SUBTITLE_START plainText END_TAG;
+subtitle : SUBTITLE_START multiLinePlainText END_TAG;
+secondLevelSubtitle : SECOND_SUBTITLE_START multiLinePlainText END_TAG;
 
 // Text ranges
 textRange : TEXT_RANGE_START bitmarkMinimalElement+ END_TAG;
@@ -53,18 +54,18 @@ footnote : textRange FOOTNOTE_START bitmarkMinimalElement+ END_TAG;
 glossary : textRange GLOSSARY_START bitmarkMinimalElement+ END_TAG;
 
 // Bitmark Minimal Markup
-emphasized : EMPHASIZE plainText EMPHASIZE;
-important : IMPORTANT plainText IMPORTANT;
+emphasized : EMPHASIZE multiLinePlainText EMPHASIZE;
+important : IMPORTANT multiLinePlainText IMPORTANT;
 
 // Bitmark Plus Markup
-comment : COMMENT plainText COMMENT;
-highlighted : HIGHLIGHT plainText HIGHLIGHT;
-deleted : DELETE plainText DELETE;
-inserted : INSERT plainText INSERT;
-remarked : REMARK_START plainText REMARK_END;
+comment : COMMENT multiLinePlainText COMMENT;
+highlighted : HIGHLIGHT multiLinePlainText HIGHLIGHT;
+deleted : DELETE multiLinePlainText DELETE;
+inserted : INSERT multiLinePlainText INSERT;
+remarked : REMARK_START multiLinePlainText REMARK_END;
 
 // Lists
 bulletedList : bulletedListEntry+;
-bulletedListEntry : BULLETED_LIST_START bitmarkMinimalElement+;
+bulletedListEntry : BULLETED_LIST_START (emphasized | important | plainText)+;
 numberedList : numberedListEntry+;
-numberedListEntry : NUMBERED_LIST_START bitmarkMinimalElement+;
+numberedListEntry : NUMBERED_LIST_START (emphasized | important | plainText)+;

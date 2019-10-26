@@ -30,14 +30,21 @@ class BitmarkTextListenerHtml : MarkupExtractor {
         builder.append(treeToString(ctx))
     }
 
-    private fun treeToString(ctx: BitmarktextParser.PlainTextContext): String {
+    override fun enterMultiLinePlainText(ctx: BitmarktextParser.MultiLinePlainTextContext) {
+        builder.append(treeToString(ctx))
+    }
+
+    override fun exitMultiLinePlainText(ctx: BitmarktextParser.MultiLinePlainTextContext) {
+    }
+
+    private fun treeToString(ctx: ParserRuleContext): String {
         val sb = StringBuilder()
         ctx.children.forEach {
             sb.append(it.text)
         }
         return sb.toString()
     }
-    
+
     override fun exitPlainText(ctx: BitmarktextParser.PlainTextContext) {
     }
 

@@ -46,4 +46,19 @@ class BitmarkTextListenerHtmlTest {
         val html = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerHtml()).convert(input)
         Assert.assertEquals("<ol><li>This is a list with only a single element</li></ol>", html)
     }
+
+    @Test
+    fun testListNotAtEnd() {
+        val input = """List:
+1. W[_o]rld.
+1. Goodbye
+
+Frank."""
+        val html = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerHtml()).convert(input)
+        Assert.assertEquals(
+            """List:<ol><li>W[_o]rld.</li><li>Goodbye</li></ol>
+
+Frank.""", html
+        )
+    }
 }
