@@ -40,7 +40,11 @@ class BitmarkTextListenerHtml : MarkupExtractor {
     private fun treeToString(ctx: ParserRuleContext): String {
         val sb = StringBuilder()
         ctx.children.forEach {
-            sb.append(it.text)
+            val sanitized = it.text
+                    .replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;")
+            sb.append(sanitized)
         }
         return sb.toString()
     }

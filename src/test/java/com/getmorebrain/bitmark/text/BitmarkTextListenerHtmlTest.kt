@@ -20,6 +20,14 @@ class BitmarkTextListenerHtmlTest {
     }
 
     @Test
+    fun testEscaping() {
+        val input = "Test escaping: < > &"
+        val html = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerHtml()).convert(input)
+        Assert.assertEquals(html, "Test escaping: &lt; &gt; &amp;")
+    }
+
+
+    @Test
     fun testHtmlListConversion_SingleItems() {
         val input = """This is a list with a single item
 1. This"""
