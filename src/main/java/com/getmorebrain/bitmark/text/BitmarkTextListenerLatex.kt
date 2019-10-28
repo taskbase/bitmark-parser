@@ -40,7 +40,19 @@ class BitmarkTextListenerLatex(
     private fun treeToString(ctx: ParserRuleContext): String {
         val sb = StringBuilder()
         ctx.children.forEach {
-            sb.append(it.text)
+            val sanitized = it.text
+                    .replace("\\", "INTERMEDIATE-BACKSLASH-REPLACEMENT") // must happen first
+                    .replace("#", "\\#")
+                    .replace("$", "\\$")
+                    .replace("%", "\\%")
+                    .replace("&", "\\&")
+                    .replace("_", "\\_")
+                    .replace("{", "\\{")
+                    .replace("}", "\\}")
+                    .replace("^", "\\^{}") // must happen after replacing braces
+                    .replace("~", "\\~{}") // must happen after replacing braces
+                    .replace("INTERMEDIATE-BACKSLASH-REPLACEMENT", "\\textbackslash{}") // must happen after replacing braces
+            sb.append(sanitized)
         }
         return sb.toString()
     }

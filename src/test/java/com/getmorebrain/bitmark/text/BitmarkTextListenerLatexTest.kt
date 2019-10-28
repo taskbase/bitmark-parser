@@ -16,8 +16,18 @@ class BitmarkTextListenerLatexTest {
             BufferedReader(InputStreamReader(stream)).lines().asSequence().fold("") { l, r -> "$l\n$r" }
         )
         assertNotNull(laTeX)
-        println(laTeX)
     }
+
+    @Test
+    fun testEscaping() {
+        val input = """Those characters are escaped: # ${'$'} % ^ & _ { } ~ \"""
+        val laTeX = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerLatex()).convert(input)
+        assertEquals(
+                """Those characters are escaped: \# \${'$'} \% \^{} \& \_ \{ \} \~{} \textbackslash{}""", laTeX
+        )
+    }
+
+
 
     @Test
     fun testLatexListConversion() {
