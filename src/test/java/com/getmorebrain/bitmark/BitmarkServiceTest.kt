@@ -3,6 +3,7 @@ package com.getmorebrain.bitmark
 import com.getmorebrain.bitmark.model.ClozeBit
 import com.google.gson.GsonBuilder
 import org.antlr.v4.runtime.CharStreams
+import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -105,5 +106,11 @@ Line 2"""
 Line 1
 Line 2""", bit.body
         )
+    }
+
+    @Test
+    fun testClozeAtStart() {
+        val bit = BitmarkService().parse("[.cloze][_Hallo] du.").first() as ClozeBit
+        assertEquals("{0} du.", bit.body)
     }
 }

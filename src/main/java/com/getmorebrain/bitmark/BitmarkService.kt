@@ -42,7 +42,9 @@ class BitmarkService(
         val instruction = ctx.instruction()?.string()?.let { treeToString(it) } ?: defaultValues.instruction
         val gaps: Map<String, ClozeBit.ClozeGap> =
             ctx.clozeText().flatMap { clozeText: BitmarkParser.ClozeTextContext ->
-                body.append(treeToString(clozeText.string()))
+                if (clozeText.string() != null) {
+                    body.append(treeToString(clozeText.string()))
+                }
                 clozeText.gapContext().mapIndexed { i: Int, gapContext: BitmarkParser.GapContextContext ->
                     val gapPlaceHolder = "{$i}"
                     body.append(gapPlaceHolder)
