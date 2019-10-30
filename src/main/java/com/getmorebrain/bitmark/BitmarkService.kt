@@ -5,6 +5,7 @@ import com.getmorebrain.bitmark.model.ClozeBit
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
+import java.lang.IllegalStateException
 import java.util.logging.Logger
 
 class BitmarkService(
@@ -40,27 +41,33 @@ class BitmarkService(
 
         val article = ClozeBit().article // TODO extend parser and test cases
         val instruction = ctx.instruction()?.string()?.let { treeToString(it) } ?: defaultValues.instruction
-        val gaps: Map<String, ClozeBit.ClozeGap> =
-            ctx.clozeText().flatMap { clozeText: BitmarkParser.ClozeTextContext ->
-                if (clozeText.string() != null) {
-                    body.append(treeToString(clozeText.string()))
-                }
-                clozeText.gapContext().mapIndexed { i: Int, gapContext: BitmarkParser.GapContextContext ->
-                    val gapPlaceHolder = "{$i}"
-                    body.append(gapPlaceHolder)
-                    val gapChain = gapContext.gapChain()
-                    body.append(treeToString(gapContext.string()))
-                    Pair(gapPlaceHolder,
-                        ClozeBit.ClozeGap(
-                            solutions = gapChain.gap().map { gap: BitmarkParser.GapContext ->
+        var gapCount = 0
+        val gaps: MutableMap<String, ClozeBit.ClozeGap> = HashMap()
+        ctx.clozeText().forEach { clozeText: BitmarkParser.ClozeTextContext ->
+            clozeText.children.forEach { stringOrGapChain ->
+                when (stringOrGapChain) {
+                    is BitmarkParser.StringContext -> {
+                        body.append(treeToString(stringOrGapChain))
+                    }
+                    is BitmarkParser.GapChainContext -> {
+                        val gapPlaceHolder = "{${gapCount++}}"
+                        body.append(gapPlaceHolder)
+                        gaps[gapPlaceHolder] = ClozeBit.ClozeGap(
+                            solutions = stringOrGapChain.gap().map { gap: BitmarkParser.GapContext ->
                                 treeToString(gap.string())
                             },
-                            hint = gapChain.gapHint().firstOrNull()?.string()?.let { treeToString(it) },
-                            instruction = gapChain.gapInstruction().firstOrNull()?.string()?.let { treeToString(it) }
+                            hint = stringOrGapChain.gapHint().firstOrNull()?.string()?.let { treeToString(it) },
+                            instruction = stringOrGapChain.gapInstruction().firstOrNull()?.string()?.let {
+                                treeToString(
+                                    it
+                                )
+                            }
                         )
-                    )
+                    }
+                    else -> throw IllegalStateException("Cloze text can only contain strings and gap chains")
                 }
-            }.toMap()
+            }
+        }
 
         val cloze = ClozeBit(
             format = format,
@@ -75,12 +82,6 @@ class BitmarkService(
         )
 
         bits.add(cloze)
-    }
-
-    override fun enterGapContext(ctx: BitmarkParser.GapContextContext?) {
-    }
-
-    override fun exitGapContext(ctx: BitmarkParser.GapContextContext?) {
     }
 
     override fun exitCloze(ctx: BitmarkParser.ClozeContext?) {

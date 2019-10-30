@@ -42,8 +42,7 @@ bit: cloze | multipleChoice;
 // Cloze Text
 cloze: clozeType instruction? ((clozeText? attachment clozeText?) | clozeText);
 clozeType: CLOZE_TYPE ATTACHMENT? BITMARK_TYPE? CLOSE;
-clozeText: (string gapContext*) | (gapContext+);
-gapContext: gapChain string;
+clozeText: string | (string* gapChain string*)+;
 gapChain: gap+ (gapInstruction | gapHint)*;
 gap: OPEN_GAP string CLOSE;
 gapInstruction : OPEN_INSTRUCTION string CLOSE;

@@ -3,7 +3,6 @@ package com.getmorebrain.bitmark
 import com.getmorebrain.bitmark.model.ClozeBit
 import com.google.gson.GsonBuilder
 import org.antlr.v4.runtime.CharStreams
-import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -19,7 +18,7 @@ class BitmarkServiceTest {
         assertEquals(2, clozeBit.gaps.size)
         assertTrue(clozeBit.gaps.keys.contains("{0}"))
         assertTrue(clozeBit.gaps.keys.contains("{1}"))
-        assertEquals(listOf("cloze", "gap text"), clozeBit.gaps.values.first().solutions)
+        assertEquals(listOf("cloze", "gap text"), clozeBit.gaps["{0}"]?.solutions)
         assertEquals("noun", clozeBit.gaps["{0}"]?.instruction)
         assertEquals("2", clozeBit.gaps["{1}"]?.solutions?.first())
         assertEquals("1 or 2", clozeBit.gaps["{1}"]?.hint)
@@ -110,7 +109,13 @@ Line 2""", bit.body
 
     @Test
     fun testClozeAtStart() {
-        val bit = BitmarkService().parse("[.cloze][_Hallo] du.").first() as ClozeBit
+        val bit = BitmarkService().parse("[.cloze][_Hallo] du.").first()
         assertEquals("{0} du.", bit.body)
+    }
+
+    @Test
+    fun testClozeAtEnd() {
+        val bit = BitmarkService().parse("[.cloze]test [_test]").first()
+        assertEquals("test {0}", bit.body)
     }
 }
