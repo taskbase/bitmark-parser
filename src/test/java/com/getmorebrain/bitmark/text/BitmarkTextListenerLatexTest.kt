@@ -39,7 +39,7 @@ class BitmarkTextListenerLatexTest {
         val laTeX = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerLatex()).convert(input)
         assertEquals(
             """This is a list
-\begin{enumerate}
+\begin{enumerate}[label={\arabic*.}]
 \item This
 \item Is
 \item A

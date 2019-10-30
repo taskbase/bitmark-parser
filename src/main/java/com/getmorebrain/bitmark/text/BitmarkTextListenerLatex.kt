@@ -146,7 +146,7 @@ class BitmarkTextListenerLatex(
     }
 
     override fun enterNumberedList(ctx: BitmarktextParser.NumberedListContext) {
-        builder.append("\n\\begin{enumerate}\n")
+        builder.append("\n\\begin{enumerate}[label={\\arabic*.}]\n")
     }
 
     override fun exitNumberedList(ctx: BitmarktextParser.NumberedListContext) {
