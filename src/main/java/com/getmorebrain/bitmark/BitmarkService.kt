@@ -1,22 +1,24 @@
 package com.getmorebrain.bitmark
 
-import com.getmorebrain.bitmark.model.Bit
+import com.getmorebrain.bitmark.model.BitmarkBit
 import com.getmorebrain.bitmark.model.ClozeBit
 import org.antlr.v4.runtime.ParserRuleContext
+import org.antlr.v4.runtime.misc.Interval
 import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
-import java.lang.IllegalStateException
 import java.util.logging.Logger
 
 class BitmarkService(
     private val log: Logger = Logger.getLogger(BitmarkService::class.java.name)
 ) : BitExtractor {
 
-    private val bits: MutableList<Bit> = ArrayList()
+    private val bits: MutableList<BitmarkBit> = ArrayList()
 
-    override fun bits(): List<Bit> = bits
+    override fun bits(): List<BitmarkBit> = bits
 
     override fun enterCloze(ctx: BitmarkParser.ClozeContext) {
+
+        val input = ctx.start.inputStream.getText(Interval(ctx.start.startIndex, ctx.stop.stopIndex))
 
         val defaultValues = ClozeBit()
         val format = ctx.clozeType().BITMARK_TYPE()?.text?.let { it.drop(1) } ?: defaultValues.format
@@ -81,7 +83,7 @@ class BitmarkService(
             gaps = gaps
         )
 
-        bits.add(cloze)
+        bits.add(BitmarkBit(bitmark = input, bit = cloze))
     }
 
     override fun exitCloze(ctx: BitmarkParser.ClozeContext?) {
