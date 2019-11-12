@@ -28,6 +28,7 @@ class BitmarkServiceTest {
             clozeBit.body
         )
         assertEquals(bitmark, bits.first().bitmark)
+        assertEquals(null, clozeBit.hint)
         println(GsonBuilder().setPrettyPrinting().create().toJson(clozeBit))
     }
 

@@ -76,9 +76,9 @@ class BitmarkService(
             image = image,
             audio = audio,
             article = article,
-            item = "",
+            item = null,
             instruction = instruction,
-            hint = "",
+            hint = null,
             body = body.toString(),
             gaps = gaps
         )
