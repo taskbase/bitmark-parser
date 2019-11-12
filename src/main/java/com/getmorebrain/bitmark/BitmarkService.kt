@@ -8,9 +8,7 @@ import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
 import java.util.logging.Logger
 
-class BitmarkService(
-    private val log: Logger = Logger.getLogger(BitmarkService::class.java.name)
-) : BitExtractor {
+class BitmarkService(private val log: Logger = Logger.getLogger(BitmarkService::class.java.name)) : BitExtractor {
 
     private val bits: MutableList<BitmarkBit> = ArrayList()
 
@@ -71,6 +69,8 @@ class BitmarkService(
             }
         }
 
+        val bodyString = body.toString()
+
         val cloze = ClozeBit(
             format = format,
             image = image,
@@ -79,7 +79,7 @@ class BitmarkService(
             item = null,
             instruction = instruction,
             hint = null,
-            body = body.toString(),
+            body = if (bodyString.isNotBlank()) bodyString else null,
             gaps = gaps
         )
 
