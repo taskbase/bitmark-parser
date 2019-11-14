@@ -207,6 +207,5 @@ class BitmarkTextListenerLatex(
     }
 
     override fun visitErrorNode(node: ErrorNode) {
-
     }
 }

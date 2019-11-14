@@ -10,8 +10,8 @@ class BitmarkServiceTest {
 
     @Test
     fun testParse() {
-        val bitmark = "[.cloze]This sentence is a [_cloze][_gap text][!noun] with [_2][?1 or 2] gaps including " +
-                "an instruction for the first and a hint for the second gap."
+        val bitmark = "[.cloze][!Fill in the gaps!]This sentence is a [_cloze][_gap text][!noun] with [_2][?1 or 2] " +
+                "gaps including an instruction for the first and a hint for the second gap."
         val bits = BitmarkService().parse(bitmark)
         val clozeBit = bits.first().bit as ClozeBit
         assertNotNull(clozeBit)
@@ -29,6 +29,11 @@ class BitmarkServiceTest {
         )
         assertEquals(bitmark, bits.first().bitmark)
         assertEquals(null, clozeBit.hint)
+        assertEquals(
+            "This sentence is a [_cloze][_gap text][!noun] with [_2][?1 or 2] gaps including " +
+                    "an instruction for the first and a hint for the second gap.", bits.first().bodyBitmark
+        )
+        assertEquals("[!Fill in the gaps!]", bits.first().instructionBitmark)
         println(GsonBuilder().setPrettyPrinting().create().toJson(clozeBit))
     }
 
@@ -121,5 +126,12 @@ Line 2""", bit.bit.body
     fun testClozeAtEnd() {
         val bit = BitmarkService().parse("[.cloze]test [_test]").first()
         assertEquals("test {0}", bit.bit.body)
+    }
+
+    @Test
+    fun testEmptyCloze() {
+        val bit = BitmarkService().parse("[.cloze]").first()
+        assertNull(bit.instructionBitmark)
+        assertNull(bit.bodyBitmark)
     }
 }

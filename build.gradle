@@ -13,7 +13,7 @@ plugins {
 
 group 'com.taskbase.bitmark'
 archivesBaseName = 'bitmark-parser'
-version '0.7.2'
+version '0.7.4'
 
 repositories {
     mavenCentral()
@@ -50,15 +50,16 @@ test {
 }
 
 generateGrammarSource {
-    //  arguments = ['-Dlanguage=JavaScript']
-    //  outputDirectory = file('build/generated-src/main/javascript')
+//    arguments = ['-Dlanguage=JavaScript']
+//    outputDirectory = file('build/generated-src/main/javascript')
 }
 
 publishing {
     repositories {
         maven {
             name = "Github"
-            url = uri("https://maven.pkg.github.com/taskbase/bitmark-parser")
+            url = uri("https://maven.pkg.github.com/getMoreBrain/bitmark-parser")
+            //url = uri("https://maven.pkg.github.com/taskbase/bitmark-parser")
             credentials {
                 username = findProperty("github.username")
                 password = findProperty("github.token")

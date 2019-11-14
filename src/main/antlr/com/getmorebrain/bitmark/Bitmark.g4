@@ -40,8 +40,9 @@ bitBook : bit+;
 bit: cloze | multipleChoice;
 
 // Cloze Text
-cloze: clozeType instruction? ((clozeText? attachment clozeText?) | clozeText);
+cloze: clozeType instruction? clozeBody?;
 clozeType: CLOZE_TYPE ATTACHMENT? BITMARK_TYPE? CLOSE;
+clozeBody: (clozeText? attachment clozeText?) | clozeText;
 clozeText: string | (string* gapChain string*)+;
 gapChain: gap+ (gapInstruction | gapHint)*;
 gap: OPEN_GAP string CLOSE;

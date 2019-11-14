@@ -15,15 +15,13 @@ class BitmarkService(private val log: Logger = Logger.getLogger(BitmarkService::
     override fun bits(): List<BitmarkBit> = bits
 
     override fun enterCloze(ctx: BitmarkParser.ClozeContext) {
-
-        val input = ctx.start.inputStream.getText(Interval(ctx.start.startIndex, ctx.stop.stopIndex))
-
         val defaultValues = ClozeBit()
         val format = ctx.clozeType().BITMARK_TYPE()?.text?.let { it.drop(1) } ?: defaultValues.format
 
-        val attachment: String? = ctx.attachment()?.let { attachmentContext: BitmarkParser.AttachmentContext ->
-            treeToString(attachmentContext.string())
-        }
+        val attachment: String? =
+            ctx.clozeBody()?.attachment()?.let { attachmentContext: BitmarkParser.AttachmentContext ->
+                treeToString(attachmentContext.string())
+            }
 
         val image: String? = if (ctx.clozeType().ATTACHMENT()?.text == "&image") {
             attachment
@@ -43,7 +41,7 @@ class BitmarkService(private val log: Logger = Logger.getLogger(BitmarkService::
         val instruction = ctx.instruction()?.string()?.let { treeToString(it) } ?: defaultValues.instruction
         var gapCount = 0
         val gaps: MutableMap<String, ClozeBit.ClozeGap> = HashMap()
-        ctx.clozeText().forEach { clozeText: BitmarkParser.ClozeTextContext ->
+        ctx.clozeBody()?.clozeText()?.forEach { clozeText: BitmarkParser.ClozeTextContext ->
             clozeText.children.forEach { stringOrGapChain ->
                 when (stringOrGapChain) {
                     is BitmarkParser.StringContext -> {
@@ -83,7 +81,14 @@ class BitmarkService(private val log: Logger = Logger.getLogger(BitmarkService::
             gaps = gaps
         )
 
-        bits.add(BitmarkBit(bitmark = input, bit = cloze))
+        bits.add(
+            BitmarkBit(
+                bitmark = bitmarkOfContext(ctx),
+                bodyBitmark = ctx.clozeBody()?.let { bitmarkOfContext(it) },
+                instructionBitmark = ctx.instruction()?.let { bitmarkOfContext(it) },
+                bit = cloze
+            )
+        )
     }
 
     override fun exitCloze(ctx: BitmarkParser.ClozeContext?) {
@@ -93,6 +98,12 @@ class BitmarkService(private val log: Logger = Logger.getLogger(BitmarkService::
     }
 
     override fun exitClozeText(ctx: BitmarkParser.ClozeTextContext?) {
+    }
+
+    override fun enterClozeBody(ctx: BitmarkParser.ClozeBodyContext?) {
+    }
+
+    override fun exitClozeBody(ctx: BitmarkParser.ClozeBodyContext?) {
     }
 
     override fun enterGap(ctx: BitmarkParser.GapContext?) {
@@ -188,6 +199,22 @@ class BitmarkService(private val log: Logger = Logger.getLogger(BitmarkService::
 
     /*
      * Helper functions
+     */
+
+    /**
+     * Extract the underlying Bitmark which was parsed by a certain rule.
+     */
+    private fun bitmarkOfContext(context: ParserRuleContext): String {
+        return context.start.inputStream.getText(
+            Interval(
+                context.start.startIndex,
+                context.stop.stopIndex
+            )
+        )
+    }
+
+    /**
+     * Extract the content as string
      */
     private fun treeToString(ctx: BitmarkParser.StringContext): String {
         val sb = StringBuilder()
