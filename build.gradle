@@ -58,8 +58,8 @@ publishing {
     repositories {
         maven {
             name = "Github"
-            url = uri("https://maven.pkg.github.com/getMoreBrain/bitmark-parser")
-            //url = uri("https://maven.pkg.github.com/taskbase/bitmark-parser")
+            //url = uri("https://maven.pkg.github.com/getMoreBrain/bitmark-parser")
+            url = uri("https://maven.pkg.github.com/taskbase/bitmark-parser")
             credentials {
                 username = findProperty("github.username")
                 password = findProperty("github.token")
