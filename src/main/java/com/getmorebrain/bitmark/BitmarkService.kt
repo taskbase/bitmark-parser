@@ -2,6 +2,7 @@ package com.getmorebrain.bitmark
 
 import com.getmorebrain.bitmark.model.BitmarkBit
 import com.getmorebrain.bitmark.model.ClozeBit
+import com.getmorebrain.bitmark.model.MarkBit
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.misc.Interval
 import org.antlr.v4.runtime.tree.ErrorNode
@@ -37,7 +38,6 @@ class BitmarkService(private val log: Logger = Logger.getLogger(BitmarkService::
 
         val body = StringBuilder()
 
-        val article = ClozeBit().article // TODO extend parser and test cases
         val instruction = ctx.instruction()?.string()?.let { treeToString(it) } ?: defaultValues.instruction
         var gapCount = 0
         val gaps: MutableMap<String, ClozeBit.ClozeGap> = HashMap()
@@ -73,7 +73,7 @@ class BitmarkService(private val log: Logger = Logger.getLogger(BitmarkService::
             format = format,
             image = image,
             audio = audio,
-            article = article,
+            article = null,
             item = null,
             instruction = instruction,
             hint = null,
@@ -89,6 +89,108 @@ class BitmarkService(private val log: Logger = Logger.getLogger(BitmarkService::
                 bit = cloze
             )
         )
+    }
+
+    override fun enterMark(ctx: BitmarkParser.MarkContext) {
+        val defaultValues = MarkBit()
+        val format = ctx.markType().BITMARK_TYPE()?.text?.let { it.drop(1) } ?: defaultValues.format
+        val attachment: String? =
+            ctx.markBody()?.attachment()?.let { attachmentContext: BitmarkParser.AttachmentContext ->
+                treeToString(attachmentContext.string())
+            }
+        val image: String? = if (ctx.markType().ATTACHMENT()?.text == "&image") {
+            attachment
+        } else {
+            null
+        }
+        val audio: String? = if (ctx.markType().ATTACHMENT()?.text == "&audio") {
+            attachment
+        } else {
+            null
+        }
+        val body = StringBuilder()
+        val marks = mutableMapOf<String, MarkBit.Mark>()
+        var markCount = 1
+        ctx.markBody()?.markText()?.forEach { markText: BitmarkParser.MarkTextContext ->
+            markText.children.forEach { child ->
+                when (child) {
+                    is BitmarkParser.StringContext -> body.append(child.text)
+                    is BitmarkParser.TextRangeContext -> {
+                        val key = "{${markCount++}}"
+                        marks[key] = MarkBit.Mark(
+                            text = child.string().text,
+                            mark = child.marker().markerColor()?.string()?.text
+                        )
+                    }
+                    else -> throw IllegalStateException("Mark text only contains strings and text ranges and not '${child.javaClass}'")
+                }
+            }
+            markText.textRange().forEach { range ->
+                range.string()
+                range.marker().markerColor().string()
+            }
+        }
+        
+        val bodyString = body.toString()
+        val instruction = ctx.instruction()?.string()?.let { treeToString(it) } ?: defaultValues.instruction
+        val mark = MarkBit(
+            format = format,
+            image = image,
+            audio = audio,
+            article = null,
+            instruction = instruction,
+            hint = null,
+            body = if (bodyString.isNotBlank()) bodyString else null,
+            marks = marks
+        )
+
+        bits.add(
+            BitmarkBit(
+                bitmark = bitmarkOfContext(ctx),
+                bodyBitmark = ctx.markBody()?.let { bitmarkOfContext(it) },
+                instructionBitmark = ctx.instruction()?.let { bitmarkOfContext(it) },
+                bit = mark
+            )
+        )
+    }
+
+    override fun exitMark(ctx: BitmarkParser.MarkContext?) {
+    }
+
+    override fun enterMarkType(ctx: BitmarkParser.MarkTypeContext?) {
+    }
+
+    override fun exitMarkType(ctx: BitmarkParser.MarkTypeContext?) {
+    }
+
+    override fun enterMarkBody(ctx: BitmarkParser.MarkBodyContext?) {
+    }
+
+    override fun exitMarkBody(ctx: BitmarkParser.MarkBodyContext?) {
+    }
+
+    override fun enterMarkText(ctx: BitmarkParser.MarkTextContext?) {
+    }
+
+    override fun exitMarkText(ctx: BitmarkParser.MarkTextContext?) {
+    }
+
+    override fun enterMarker(ctx: BitmarkParser.MarkerContext?) {
+    }
+
+    override fun exitMarker(ctx: BitmarkParser.MarkerContext?) {
+    }
+
+    override fun enterTextRange(ctx: BitmarkParser.TextRangeContext?) {
+    }
+
+    override fun exitTextRange(ctx: BitmarkParser.TextRangeContext?) {
+    }
+
+    override fun enterMarkerColor(ctx: BitmarkParser.MarkerColorContext?) {
+    }
+
+    override fun exitMarkerColor(ctx: BitmarkParser.MarkerColorContext?) {
     }
 
     override fun exitCloze(ctx: BitmarkParser.ClozeContext?) {
@@ -115,28 +217,10 @@ class BitmarkService(private val log: Logger = Logger.getLogger(BitmarkService::
     override fun exitGapInstruction(ctx: BitmarkParser.GapInstructionContext?) {
     }
 
-    override fun enterMultipleChoice(ctx: BitmarkParser.MultipleChoiceContext?) {
-    }
-
-    override fun exitMultipleChoice(ctx: BitmarkParser.MultipleChoiceContext?) {
-    }
-
-    override fun enterCorrectOption(ctx: BitmarkParser.CorrectOptionContext?) {
-    }
-
-    override fun exitCorrectOption(ctx: BitmarkParser.CorrectOptionContext?) {
-    }
-
-    override fun enterWrongOption(ctx: BitmarkParser.WrongOptionContext?) {
-    }
-
     override fun enterEveryRule(ctx: ParserRuleContext?) {
     }
 
     override fun exitEveryRule(ctx: ParserRuleContext?) {
-    }
-
-    override fun exitWrongOption(ctx: BitmarkParser.WrongOptionContext?) {
     }
 
     override fun enterString(ctx: BitmarkParser.StringContext?) {

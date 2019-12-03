@@ -1,6 +1,7 @@
 package com.getmorebrain.bitmark
 
 import com.getmorebrain.bitmark.model.ClozeBit
+import com.getmorebrain.bitmark.model.MarkBit
 import com.google.gson.GsonBuilder
 import org.antlr.v4.runtime.CharStreams
 import org.junit.Assert.*
@@ -133,5 +134,22 @@ Line 2""", bit.bit.body
         val bit = BitmarkService().parse("[.cloze]").first()
         assertNull(bit.instructionBitmark)
         assertNull(bit.bodyBitmark)
+    }
+
+    @Test
+    fun testMark() {
+        val bitmark = """[.mark]
+[!Please mark all ==verbs==(blue)== and ==nouns==(red)==.]
+
+When ['Diaz][@mark:red] ['returned][@mark:blue] and ['seated][@mark:blue] himself to ['play][@mark:blue] the 
+['Berceuse][@mark:red], I ['saw][@mark:blue] that he ['could][@mark:blue] ['look][@mark:blue] at me without 
+['turning][@mark:blue] his ['head][@mark:red]."""
+
+        val bit = BitmarkService().parse(bitmark).first().bit as MarkBit
+        assertEquals("Diaz", bit.marks["{1}"]?.text)
+        assertEquals("returned", bit.marks["{2}"]?.text)
+        assertEquals("seated", bit.marks["{3}"]?.text)
+        assertEquals("blue", bit.marks["{3}"]?.mark)
+
     }
 }

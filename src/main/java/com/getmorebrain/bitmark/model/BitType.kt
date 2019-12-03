@@ -1,5 +1,6 @@
 package com.getmorebrain.bitmark.model
 
 enum class BitType(val typeId: String, val className: String) {
-    CLOZE("cloze", ClozeBit::class.java.name)
+    CLOZE("cloze", ClozeBit::class.java.name),
+    MARK("mark", MarkBit::class.java.name)
 }

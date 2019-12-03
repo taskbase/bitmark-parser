@@ -11,14 +11,12 @@ package com.getmorebrain.bitmark;
 COMMENT              : ('||' .*? '||' | '[.' | '[=') -> skip;
 NEW_LINE             : '\n';
 OPEN_TYPE            : '[.';
-CORRECT_OPTION_OPEN  : '[+';
-WRONG_OPTION_OPEN    : '[-';
 OPEN_INSTRUCTION     : NEW_LINE* '[!';
 OPEN_HINT            : '[?';
 OPEN_GAP             : '[_';
 CLOSE                : ']';
-MULTIPLE_CHOICE_TYPE : '[.multiple-choice]';
 CLOZE_TYPE           : '[.cloze';
+MARK_TYPE            : '[.mark';
 ATTACHMENT           : '&image' | '&audio' | '&article';
 BITMARK_TYPE         : ':bitmark++' | ':bitmark--';
 STRING_CHAR          : .+?; // Matches every character separately into a single token!
@@ -37,7 +35,7 @@ attachment : ('[&image::'|'[&audio::'|'[&article::') string CLOSE;
 
 // BitBooks
 bitBook : bit+;
-bit: cloze | multipleChoice;
+bit: cloze | mark;
 
 // Cloze Text
 cloze: clozeType instruction? clozeBody?;
@@ -49,7 +47,11 @@ gap: OPEN_GAP string CLOSE;
 gapInstruction : OPEN_INSTRUCTION string CLOSE;
 gapHint: OPEN_HINT string CLOSE;
 
-// Multiple Choice
-multipleChoice : MULTIPLE_CHOICE_TYPE instruction? (correctOption | wrongOption)+;
-correctOption: CORRECT_OPTION_OPEN string CLOSE;
-wrongOption: WRONG_OPTION_OPEN string CLOSE;
+// Mark
+mark: markType instruction? markBody?;
+markType: MARK_TYPE ATTACHMENT? BITMARK_TYPE? CLOSE;
+markBody: (markText? attachment markText?) | markText;
+markText: string | (string? textRange string?)+;
+textRange: '[\'' string CLOSE marker;
+marker: '[@mark' markerColor? CLOSE;
+markerColor: ':' string;
