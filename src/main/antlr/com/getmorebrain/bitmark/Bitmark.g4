@@ -53,5 +53,4 @@ markType: MARK_TYPE ATTACHMENT? BITMARK_TYPE? CLOSE;
 markBody: (markText? attachment markText?) | markText;
 markText: string | (string? textRange string?)+;
 textRange: '[\'' string CLOSE marker;
-marker: '[@mark' markerColor? CLOSE;
-markerColor: ':' string;
+marker: ('[@mark:' string CLOSE) | '[@mark]';

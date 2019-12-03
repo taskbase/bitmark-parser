@@ -120,18 +120,14 @@ class BitmarkService(private val log: Logger = Logger.getLogger(BitmarkService::
                         val key = "{${markCount++}}"
                         marks[key] = MarkBit.Mark(
                             text = child.string().text,
-                            mark = child.marker().markerColor()?.string()?.text
+                            mark = child.marker()?.string()?.text
                         )
                     }
                     else -> throw IllegalStateException("Mark text only contains strings and text ranges and not '${child.javaClass}'")
                 }
             }
-            markText.textRange().forEach { range ->
-                range.string()
-                range.marker().markerColor().string()
-            }
         }
-        
+
         val bodyString = body.toString()
         val instruction = ctx.instruction()?.string()?.let { treeToString(it) } ?: defaultValues.instruction
         val mark = MarkBit(
@@ -186,12 +182,6 @@ class BitmarkService(private val log: Logger = Logger.getLogger(BitmarkService::
     }
 
     override fun exitTextRange(ctx: BitmarkParser.TextRangeContext?) {
-    }
-
-    override fun enterMarkerColor(ctx: BitmarkParser.MarkerColorContext?) {
-    }
-
-    override fun exitMarkerColor(ctx: BitmarkParser.MarkerColorContext?) {
     }
 
     override fun exitCloze(ctx: BitmarkParser.ClozeContext?) {
