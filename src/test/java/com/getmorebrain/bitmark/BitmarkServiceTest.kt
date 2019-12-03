@@ -4,10 +4,15 @@ import com.getmorebrain.bitmark.model.ClozeBit
 import com.getmorebrain.bitmark.model.MarkBit
 import com.google.gson.GsonBuilder
 import org.antlr.v4.runtime.CharStreams
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class BitmarkServiceTest {
+
+    val uuid = "4cb8950b-c7b4-492c-b54d-69711c0fd607"
 
     @Test
     fun testParse() {
@@ -18,14 +23,14 @@ class BitmarkServiceTest {
         assertNotNull(clozeBit)
         assertEquals("cloze", clozeBit.type)
         assertEquals(2, clozeBit.gaps.size)
-        assertTrue(clozeBit.gaps.keys.contains("{0}"))
-        assertTrue(clozeBit.gaps.keys.contains("{1}"))
-        assertEquals(listOf("cloze", "gap text"), clozeBit.gaps["{0}"]?.solutions)
-        assertEquals("noun", clozeBit.gaps["{0}"]?.instruction)
-        assertEquals("2", clozeBit.gaps["{1}"]?.solutions?.first())
-        assertEquals("1 or 2", clozeBit.gaps["{1}"]?.hint)
+        assertTrue(clozeBit.gaps.keys.contains("$uuid-0"))
+        assertTrue(clozeBit.gaps.keys.contains("$uuid-1"))
+        assertEquals(listOf("cloze", "gap text"), clozeBit.gaps["$uuid-0"]?.solutions)
+        assertEquals("noun", clozeBit.gaps["$uuid-0"]?.instruction)
+        assertEquals("2", clozeBit.gaps["$uuid-1"]?.solutions?.first())
+        assertEquals("1 or 2", clozeBit.gaps["$uuid-1"]?.hint)
         assertEquals(
-            "This sentence is a {0} with {1} gaps including an instruction for the first and a hint for the second gap.",
+            "This sentence is a $uuid-0 with $uuid-1 gaps including an instruction for the first and a hint for the second gap.",
             clozeBit.body
         )
         assertEquals(bitmark, bits.first().bitmark)
@@ -120,13 +125,13 @@ Line 2""", bit.bit.body
     @Test
     fun testClozeAtStart() {
         val bit = BitmarkService().parse("[.cloze][_Hallo] du.").first()
-        assertEquals("{0} du.", bit.bit.body)
+        assertEquals("$uuid-0 du.", bit.bit.body)
     }
 
     @Test
     fun testClozeAtEnd() {
         val bit = BitmarkService().parse("[.cloze]test [_test]").first()
-        assertEquals("test {0}", bit.bit.body)
+        assertEquals("test $uuid-0", bit.bit.body)
     }
 
     @Test

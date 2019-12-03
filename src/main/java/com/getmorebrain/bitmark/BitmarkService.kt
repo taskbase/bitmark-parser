@@ -41,6 +41,7 @@ class BitmarkService(private val log: Logger = Logger.getLogger(BitmarkService::
         val instruction = ctx.instruction()?.string()?.let { treeToString(it) } ?: defaultValues.instruction
         var gapCount = 0
         val gaps: MutableMap<String, ClozeBit.ClozeGap> = HashMap()
+        val uuid = "4cb8950b-c7b4-492c-b54d-69711c0fd607" // to avoid collisions with user-generated content
         ctx.clozeBody()?.clozeText()?.forEach { clozeText: BitmarkParser.ClozeTextContext ->
             clozeText.children.forEach { stringOrGapChain ->
                 when (stringOrGapChain) {
@@ -48,7 +49,7 @@ class BitmarkService(private val log: Logger = Logger.getLogger(BitmarkService::
                         body.append(treeToString(stringOrGapChain))
                     }
                     is BitmarkParser.GapChainContext -> {
-                        val gapPlaceHolder = "{${gapCount++}}"
+                        val gapPlaceHolder = "$uuid-${gapCount++}"
                         body.append(gapPlaceHolder)
                         gaps[gapPlaceHolder] = ClozeBit.ClozeGap(
                             solutions = stringOrGapChain.gap().map { gap: BitmarkParser.GapContext ->
