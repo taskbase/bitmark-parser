@@ -76,11 +76,24 @@ class BitmarkTextListenerLatex(
     }
 
     override fun enterHighlighted(ctx: BitmarktextParser.HighlightedContext) {
-        builder.append("{\\color{yellow} ")
+        val color = ctx.penNameDeclaration()?.penName()?.let { treeToString(it) } ?: "yellow"
+        builder.append("{\\color{$color} ")
     }
 
     override fun exitHighlighted(ctx: BitmarktextParser.HighlightedContext) {
         builder.append("}")
+    }
+
+    override fun enterPenNameDeclaration(ctx: BitmarktextParser.PenNameDeclarationContext?) {
+    }
+
+    override fun exitPenNameDeclaration(ctx: BitmarktextParser.PenNameDeclarationContext?) {
+    }
+
+    override fun enterPenName(ctx: BitmarktextParser.PenNameContext?) {
+    }
+
+    override fun exitPenName(ctx: BitmarktextParser.PenNameContext?) {
     }
 
     override fun enterDeleted(ctx: BitmarktextParser.DeletedContext) {

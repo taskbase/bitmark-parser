@@ -59,7 +59,9 @@ important : IMPORTANT multiLinePlainText IMPORTANT;
 
 // Bitmark Plus Markup
 comment : COMMENT multiLinePlainText COMMENT;
-highlighted : HIGHLIGHT multiLinePlainText HIGHLIGHT;
+highlighted : HIGHLIGHT multiLinePlainText HIGHLIGHT penNameDeclaration?;
+penNameDeclaration : '(' penName ')' HIGHLIGHT;
+penName : STRING_CHAR+;
 deleted : DELETE multiLinePlainText DELETE;
 inserted : INSERT multiLinePlainText INSERT;
 remarked : REMARK_START multiLinePlainText REMARK_END;

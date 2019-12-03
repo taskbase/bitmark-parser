@@ -1,5 +1,6 @@
 package com.getmorebrain.bitmark.text
 
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
@@ -23,10 +24,9 @@ class BitmarkTextListenerLatexTest {
         val input = """Those characters are escaped: # ${'$'} % ^ & _ { } ~ \"""
         val laTeX = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerLatex()).convert(input)
         assertEquals(
-                """Those characters are escaped: \# \${'$'} \% \^{} \& \_ \{ \} \~{} \textbackslash{}""", laTeX
+            """Those characters are escaped: \# \${'$'} \% \^{} \& \_ \{ \} \~{} \textbackslash{}""", laTeX
         )
     }
-
 
 
     @Test
@@ -48,5 +48,15 @@ class BitmarkTextListenerLatexTest {
 """, laTeX
         )
 
+    }
+
+    @Test
+    fun testHighlightPenName() {
+        val input = """This is a text with a ==highlighted==(green)== part that is colored in green."""
+        val html = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerLatex()).convert(input)
+        assertEquals(
+            html,
+            "This is a text with a {\\color{green} highlighted} part that is colored in green."
+        )
     }
 }

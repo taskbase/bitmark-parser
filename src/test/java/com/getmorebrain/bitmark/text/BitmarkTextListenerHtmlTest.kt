@@ -69,4 +69,14 @@ Frank."""
 Frank.""", html
         )
     }
+
+    @Test
+    fun testHighlightPenName() {
+        val input = """This is a text with a ==highlighted==(green)== part that is colored in green."""
+        val html = AntlrBitmarkTextConverter(bitmarkTextListener = BitmarkTextListenerHtml()).convert(input)
+        Assert.assertEquals(
+            html,
+            "This is a text with a <mark style='color: green;'>highlighted</mark> part that is colored in green."
+        )
+    }
 }

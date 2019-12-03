@@ -41,9 +41,9 @@ class BitmarkTextListenerHtml : MarkupExtractor {
         val sb = StringBuilder()
         ctx.children.forEach {
             val sanitized = it.text
-                    .replace("&", "&amp;")
-                    .replace("<", "&lt;")
-                    .replace(">", "&gt;")
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
             sb.append(sanitized)
         }
         return sb.toString()
@@ -69,11 +69,29 @@ class BitmarkTextListenerHtml : MarkupExtractor {
     }
 
     override fun enterHighlighted(ctx: BitmarktextParser.HighlightedContext) {
-        builder.append("<mark>")
+        val color = ctx.penNameDeclaration()?.penName()?.let { treeToString(it) }
+        println("color: $color")
+        if (color != null) {
+            builder.append("<mark style='color: $color;'>")
+        } else {
+            builder.append("<mark>")
+        }
     }
 
     override fun exitHighlighted(ctx: BitmarktextParser.HighlightedContext) {
         builder.append("</mark>")
+    }
+
+    override fun enterPenNameDeclaration(ctx: BitmarktextParser.PenNameDeclarationContext?) {
+    }
+
+    override fun exitPenNameDeclaration(ctx: BitmarktextParser.PenNameDeclarationContext?) {
+    }
+
+    override fun enterPenName(ctx: BitmarktextParser.PenNameContext?) {
+    }
+
+    override fun exitPenName(ctx: BitmarktextParser.PenNameContext?) {
     }
 
     override fun enterDeleted(ctx: BitmarktextParser.DeletedContext) {
